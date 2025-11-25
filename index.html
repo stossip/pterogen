@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PTEROGEN - Why Glyceollins? The Evolution of Phytoalexins. 글리세올린 대량 생산 기술 보유 바이오 기업">
+    <title>PTEROGEN | Nature's Defense, Scientifically Evolved</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js for Data Visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-dark': '#1A3C34', // Deep Green (Stability, Nature)
+                        'brand-primary': '#2F4F4F', // Primary Green
+                        'brand-accent': '#D4A5A5', // Muted Pink (Bio/Flower origin)
+                        'brand-tiffany': '#0ABAB5', // Tiffany Blue (Fresh, Bio-Tech)
+                        'brand-light': '#F9F9F9', // Light Gray
+                        'brand-surface': '#FFFFFF',
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans KR', 'sans-serif'],
+                        display: ['Montserrat', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        // Reverted Hero pattern to Deep Green Gradient
+                        'hero-pattern': "linear-gradient(to bottom right, #1A3C34, #2F4F4F)",
+                    },
+                    boxShadow: {
+                        '3d': '0 10px 20px rgba(0,0,0,0.1), 0 6px 6px rgba(0,0,0,0.1)',
+                        '3d-hover': '0 20px 25px -5px rgba(0,0,0,0.15), 0 10px 10px -5px rgba(0,0,0,0.1)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .page-section {
+            display: none; /* SPA 구조: 기본 숨김 */
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+        .page-section.active {
+            display: block; /* 활성화 시 표시 */
+            animation: fadeIn 0.4s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #D4A5A5;
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .modal.modal-active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Folder Pull-out Effect */
+        .folder-card {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transform: translateY(0); 
+        }
+        .folder-icon-wrapper {
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .folder-card:hover .folder-icon-wrapper {
+            transform: translateY(-15px) scale(1.1);
+        }
+        .folder-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="bg-brand-light text-gray-800">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 cursor-pointer flex items-center" onclick="route('home')">
+                    <img src="Logo_Pterogen_Letter.jpg" alt="PTEROGEN Logo" class="h-10 md:h-12 w-auto object-contain">
+                    <span class="ml-2 text-xl font-display font-bold text-brand-dark hidden" id="logo-text">PTEROGEN</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center">
+                    <button onclick="route('home')" class="nav-link text-sm font-bold text-gray-600 hover:text-brand-primary transition uppercase">Home</button>
+                    <button onclick="route('technology')" class="nav-link text-sm font-bold text-gray-600 hover:text-brand-primary transition uppercase">Technology</button>
+                    <button onclick="route('science')" class="nav-link text-sm font-bold text-gray-600 hover:text-brand-primary transition uppercase">Science</button>
+                    <button onclick="route('business')" class="nav-link text-sm font-bold text-gray-600 hover:text-brand-primary transition uppercase">Business</button>
+                    <button onclick="route('company')" class="nav-link text-sm font-bold text-gray-600 hover:text-brand-primary transition uppercase">Company</button>
+                    <button onclick="route('contact')" class="px-6 py-2 rounded-full bg-brand-primary text-white text-sm font-bold hover:bg-brand-dark transition shadow-lg transform hover:-translate-y-0.5">Contact</button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button onclick="toggleMobileMenu()" class="text-gray-600 hover:text-brand-primary focus:outline-none">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 absolute w-full">
+            <div class="px-4 pt-2 pb-6 space-y-1 shadow-lg">
+                <button onclick="route('home')" class="block w-full text-left px-3 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 rounded-md">Home</button>
+                <button onclick="route('technology')" class="block w-full text-left px-3 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 rounded-md">Technology</button>
+                <button onclick="route('science')" class="block w-full text-left px-3 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 rounded-md">Science</button>
+                <button onclick="route('business')" class="block w-full text-left px-3 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 rounded-md">Business</button>
+                <button onclick="route('company')" class="block w-full text-left px-3 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 rounded-md">Company</button>
+                <button onclick="route('contact')" class="block w-full text-left px-3 py-3 text-base font-medium text-brand-primary hover:bg-gray-50 rounded-md font-bold">Contact Us</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ================= PAGE: HOME ================= -->
+    <section id="home" class="page-section active !p-0">
+        <!-- Hero Section -->
+        <!-- Background Reverted to Deep Green Gradient -->
+        <div class="relative h-screen flex items-center justify-center bg-hero-pattern overflow-hidden">
+            <canvas id="hero-canvas" class="absolute inset-0 w-full h-full z-0"></canvas>
+            <!-- Dark Overlay for Deep Green Background -->
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-brand-dark/20 to-brand-dark/80 z-0 pointer-events-none"></div>
+
+            <div class="relative z-10 text-center px-4 max-w-5xl mx-auto pointer-events-none">
+                <div class="inline-block mb-4 px-4 py-1 border border-brand-accent/50 rounded-full bg-brand-dark/30 backdrop-blur-sm pointer-events-auto">
+                    <span class="text-brand-accent font-display text-sm tracking-widest uppercase">The Answer is in Nature</span>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-display font-bold text-white mb-6 leading-tight drop-shadow-2xl pointer-events-auto">
+                    Why Glyceollins?<br>
+                    <span class="text-brand-accent text-opacity-90">The Evolution of Phytoalexins</span>
+                </h1>
+                <p class="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto mb-10 font-light leading-relaxed drop-shadow-md pointer-events-auto">
+                    자연이 만든 최후의 방어 물질, <strong>글리세올린</strong>.<br>
+                    프테로젠의 과학으로 인류의 건강한 미래를 엽니다.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4 pointer-events-auto">
+                    <button onclick="route('technology')" class="px-8 py-4 rounded-full bg-white text-brand-dark font-bold hover:bg-brand-accent hover:text-white transition duration-300 shadow-lg hover:scale-105 transform">
+                        핵심 기술 보기
+                    </button>
+                    <button onclick="route('business')" class="px-8 py-4 rounded-full border border-white text-white font-bold hover:bg-white hover:bg-opacity-10 transition duration-300">
+                        비즈니스 로드맵
+                    </button>
+                </div>
+            </div>
+            
+            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce pointer-events-auto cursor-pointer" onclick="document.getElementById('key-metrics').scrollIntoView({behavior: 'smooth'})">
+                <i class="fas fa-chevron-down text-white text-2xl opacity-70 hover:opacity-100 transition"></i>
+            </div>
+        </div>
+
+        <!-- Key Metrics Summary (White Background with Tiffany Icons) -->
+        <div id="key-metrics" class="bg-white py-16 relative z-20">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-gray-100">
+                    <!-- Metric 1 -->
+                    <div class="p-4 group cursor-pointer hover:bg-gray-50 rounded-xl transition" onclick="route('technology')">
+                        <!-- Icon Color: Tiffany Blue -->
+                        <i class="fas fa-microscope text-4xl text-brand-tiffany mb-4 group-hover:scale-110 transition duration-300"></i>
+                        <h3 class="text-4xl font-bold text-brand-dark mb-2">10<span class="text-2xl text-gray-400">x</span></h3>
+                        <p class="text-gray-600 font-medium">발현 수율 혁신<br>(0.1% → 1% 이상)</p>
+                    </div>
+                    <!-- Metric 2 -->
+                    <div class="p-4 group cursor-pointer hover:bg-gray-50 rounded-xl transition" onclick="route('science')">
+                        <!-- Icon Color: Tiffany Blue -->
+                        <i class="fas fa-shield-virus text-4xl text-brand-tiffany mb-4 group-hover:scale-110 transition duration-300"></i>
+                        <h3 class="text-4xl font-bold text-brand-dark mb-2">10<span class="text-2xl text-gray-400">x</span></h3>
+                        <p class="text-gray-600 font-medium">강력한 항산화 활성<br>(vs Genistein)</p>
+                    </div>
+                    <!-- Metric 3 -->
+                    <div class="p-4 group cursor-pointer hover:bg-gray-50 rounded-xl transition" onclick="route('business')">
+                        <!-- Icon Color: Tiffany Blue -->
+                        <i class="fas fa-globe-asia text-4xl text-brand-tiffany mb-4 group-hover:scale-110 transition duration-300"></i>
+                        <h3 class="text-4xl font-bold text-brand-dark mb-2">460<span class="text-xl text-gray-400">조</span></h3>
+                        <p class="text-gray-600 font-medium">글로벌 타겟 시장<br>(Healthcare & Beauty)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= PAGE: TECHNOLOGY ================= -->
+    <section id="technology" class="page-section bg-white">
+        <div class="max-w-7xl mx-auto px-4 py-12">
+            <div class="text-center mb-16">
+                <span class="text-brand-primary font-bold tracking-widest text-sm uppercase">Our Core Tech</span>
+                <h2 class="text-4xl md:text-5xl font-display font-bold text-brand-dark mt-2 mb-6">Microbial Elicitation Platform</h2>
+                <p class="text-gray-600 max-w-3xl mx-auto text-lg">
+                    식물의 대사 경로를 조절하는 <strong>'바이오 컨버전(Bio-conversion)'</strong> 기술.<br>
+                    자연 상태에서 극미량 존재하는 글리세올린을 상용화 가능한 수준으로 끌어올린 독보적 기술입니다.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch mb-16">
+                <!-- Left: Tech Comparison Card with Chart -->
+                <div class="bg-brand-light rounded-3xl p-8 shadow-lg border border-gray-100 flex flex-col">
+                    <h3 class="text-2xl font-bold text-brand-dark mb-8 text-center">기술 경쟁력 비교</h3>
+                    
+                    <div class="space-y-6 flex-grow">
+                        <!-- Existing Tech -->
+                        <div class="relative pl-8 pb-6 border-l-2 border-gray-300">
+                            <div class="absolute -left-2.5 top-0 w-5 h-5 rounded-full bg-gray-400"></div>
+                            <h4 class="font-bold text-gray-500 text-lg mb-1">기존 기술 (자연 추출)</h4>
+                            <p class="text-sm text-gray-500 mb-2">단순 곰팡이 감염 또는 물리적 상처 유도</p>
+                            <div class="flex items-center">
+                                <span class="text-2xl font-bold text-gray-400 mr-4">0.1% 미만</span>
+                                <span class="bg-gray-200 text-gray-600 text-xs px-2 py-1 rounded">낮은 수율</span>
+                            </div>
+                        </div>
+
+                        <!-- Pterogen Tech -->
+                        <div class="relative pl-8 border-l-2 border-brand-primary">
+                            <div class="absolute -left-2.5 top-0 w-5 h-5 rounded-full bg-brand-primary animate-pulse"></div>
+                            <h4 class="font-bold text-brand-primary text-xl mb-1">PTEROGEN 기술</h4>
+                            <p class="text-sm text-gray-600 mb-2">독자적 미생물 유도체(Elicitor) 최적 처리</p>
+                            <div class="flex items-center">
+                                <span class="text-4xl font-bold text-brand-dark mr-4">1.0% 이상</span>
+                                <span class="bg-brand-primary text-white text-xs px-2 py-1 rounded">10배 수율 증가</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chart -->
+                    <div class="mt-8 pt-8 border-t border-gray-200">
+                        <h4 class="text-center text-sm font-bold text-gray-500 mb-4">발현 수율 비교 (Production Yield)</h4>
+                        <div class="h-48 relative w-full">
+                            <canvas id="techYieldChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Core Advantages -->
+                <div class="grid grid-cols-1 gap-6">
+                    <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100 hover:shadow-xl transition duration-300 hover:-translate-y-1">
+                        <div class="w-12 h-12 bg-brand-primary text-white rounded-full flex items-center justify-center mb-4 text-xl">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-brand-dark mb-2">경제성 혁명 (Cost Efficiency)</h4>
+                        <p class="text-gray-600">수율 10배 증가는 단순한 생산성 향상이 아닙니다. 고가의 연구용 시약을 대중적인 소비재 원료 가격으로 낮춘 혁신입니다.</p>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100 hover:shadow-xl transition duration-300 hover:-translate-y-1">
+                        <div class="w-12 h-12 bg-brand-accent text-white rounded-full flex items-center justify-center mb-4 text-xl">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-brand-dark mb-2">기술 보호 (Black Box Strategy)</h4>
+                        <p class="text-gray-600">핵심 공정(Elicitation)은 본사가 직접 수행하여 기술 유출을 원천 차단하고, 엄격한 QC를 통해 균일한 품질을 보증합니다.</p>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100 hover:shadow-xl transition duration-300 hover:-translate-y-1">
+                        <div class="w-12 h-12 bg-gray-800 text-white rounded-full flex items-center justify-center mb-4 text-xl">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-brand-dark mb-2">친환경 공정 (Eco-Friendly)</h4>
+                        <p class="text-gray-600">유전자 조작(GMO)이나 유해 화학물질 합성 없이, 콩 본연의 생명력을 활용한 안전하고 지속 가능한 기술입니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= PAGE: SCIENCE (Ingredient) ================= -->
+    <section id="science" class="page-section bg-brand-light">
+        <div class="max-w-7xl mx-auto px-4 py-12">
+            <div class="text-center mb-12">
+                <span class="text-brand-primary font-bold tracking-widest text-sm uppercase">Scientific Evidence</span>
+                <h2 class="text-4xl md:text-5xl font-display font-bold text-brand-dark mt-2 mb-6">Glyceollin Mechanism</h2>
+                <p class="text-gray-600 max-w-3xl mx-auto">
+                    글리세올린은 단순한 항산화제가 아닙니다. <br>
+                    <strong>항염(Anti-Inflammation), 미백(Whitening), 선택적 호르몬 조절(SERM)</strong>의 다중 표적 기전을 가진 차세대 물질입니다.
+                </p>
+            </div>
+
+            <!-- Interactive Tabs Container -->
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden max-w-6xl mx-auto border border-gray-200">
+                <!-- Tab Headers -->
+                <div class="flex border-b border-gray-200 bg-gray-50">
+                    <button onclick="openTab('tab-anti')" class="tab-btn flex-1 py-5 text-sm md:text-lg font-bold text-brand-primary bg-white border-b-4 border-brand-accent focus:outline-none transition duration-200" id="btn-tab-anti">Anti-Inflammation</button>
+                    <button onclick="openTab('tab-white')" class="tab-btn flex-1 py-5 text-sm md:text-lg font-bold text-gray-400 hover:text-gray-600 border-b-4 border-transparent focus:outline-none transition duration-200" id="btn-tab-white">Whitening</button>
+                    <button onclick="openTab('tab-serm')" class="tab-btn flex-1 py-5 text-sm md:text-lg font-bold text-gray-400 hover:text-gray-600 border-b-4 border-transparent focus:outline-none transition duration-200" id="btn-tab-serm">Phyto-SERM</button>
+                </div>
+
+                <div class="p-8 md:p-12 min-h-[500px] relative">
+                    <!-- Tab 1: Anti-Inflammation -->
+                    <div id="tab-anti" class="tab-content block">
+                        <div class="flex flex-col md:flex-row gap-12 items-center h-full">
+                            <div class="md:w-1/2">
+                                <span class="text-brand-accent font-bold text-sm uppercase mb-2 block">Immune Modulation</span>
+                                <h3 class="text-3xl font-bold text-brand-dark mb-6">NF-κB 억제를 통한 염증 원천 봉쇄</h3>
+                                <p class="text-gray-600 mb-6 text-lg">
+                                    만성 염증은 노화의 주범입니다. 글리세올린은 염증 반응의 최상위 조절 인자인 NF-κB 경로를 차단합니다.
+                                </p>
+                                <div class="space-y-4">
+                                    <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                                        <div class="w-8 h-8 rounded-full bg-brand-primary text-white flex items-center justify-center font-bold mr-3 text-sm">1</div>
+                                        <p class="text-gray-700">염증 유발 효소 (iNOS, COX-2) 발현 억제</p>
+                                    </div>
+                                    <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                                        <div class="w-8 h-8 rounded-full bg-brand-primary text-white flex items-center justify-center font-bold mr-3 text-sm">2</div>
+                                        <p class="text-gray-700">염증성 사이토카인 (IL-6, TNF-α) 감소</p>
+                                    </div>
+                                    <div class="flex items-center p-3 bg-gray-50 rounded-lg border-l-4 border-brand-accent">
+                                        <div class="w-8 h-8 rounded-full bg-brand-accent text-white flex items-center justify-center font-bold mr-3 text-sm"><i class="fas fa-star"></i></div>
+                                        <p class="text-brand-dark font-bold">결과: 아토피, 홍조, 시술 후 붓기 즉각 진정</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md:w-1/2 w-full flex flex-col items-center justify-center">
+                                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 w-full max-w-md">
+                                    <h4 class="text-center text-gray-800 font-bold mb-2">항산화 효능 비교 (DPPH Assay)</h4>
+                                    <p class="text-center text-xs text-gray-500 mb-6">vs Genistein (일반 이소플라본)</p>
+                                    <div class="relative h-64 w-full">
+                                        <canvas id="antioxidantChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Whitening -->
+                    <div id="tab-white" class="tab-content hidden">
+                        <div class="flex flex-col md:flex-row gap-10 items-center">
+                            <div class="md:w-1/2">
+                                <span class="text-brand-accent font-bold text-sm uppercase mb-2 block">Skin Brightening</span>
+                                <h3 class="text-3xl font-bold text-brand-dark mb-6">멜라닌 생성 3단계 차단</h3>
+                                <p class="text-gray-600 mb-8 text-lg">
+                                    기존 미백제보다 강력하고 안전합니다. 멜라닌이 만들어지는 전 과정을 빈틈없이 타겟팅합니다.
+                                </p>
+                                <div class="grid grid-cols-1 gap-4">
+                                    <div class="flex items-center p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                                        <span class="text-xs font-bold text-white bg-brand-primary px-2 py-1 rounded mr-3">Step 1</span>
+                                        <div>
+                                            <p class="font-bold text-gray-800">신호 차단</p>
+                                            <p class="text-sm text-gray-500">cAMP 경로 억제</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                                        <span class="text-xs font-bold text-white bg-brand-primary px-2 py-1 rounded mr-3">Step 2</span>
+                                        <div>
+                                            <p class="font-bold text-gray-800">전사 억제</p>
+                                            <p class="text-sm text-gray-500">MITF (멜라닌 생성 마스터키) 발현 억제</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center p-4 bg-white border-2 border-brand-accent rounded-lg shadow-md">
+                                        <span class="text-xs font-bold text-white bg-brand-accent px-2 py-1 rounded mr-3">Step 3</span>
+                                        <div>
+                                            <p class="font-bold text-brand-dark">효소 억제 (핵심)</p>
+                                            <p class="text-sm text-gray-600">Tyrosinase 활성 직접 저해 (알부틴 대비 8배)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="md:w-1/2 text-center">
+                                <div class="bg-gradient-to-br from-brand-dark to-brand-primary text-white p-10 rounded-full w-64 h-64 flex flex-col items-center justify-center mx-auto shadow-2xl mb-6 transform hover:scale-105 transition duration-500">
+                                    <i class="far fa-sun text-4xl mb-3 text-yellow-400"></i>
+                                    <span class="text-4xl font-bold">8~10<span class="text-2xl">x</span></span>
+                                    <span class="text-sm font-medium opacity-90 mt-2">미백 효능<br>(vs Arbutin)</span>
+                                </div>
+                                <p class="text-sm text-gray-500 font-medium">* 자체 효소 활성 저해 실험 결과</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: SERM -->
+                    <div id="tab-serm" class="tab-content hidden">
+                        <div class="flex flex-col md:flex-row gap-10 items-center">
+                            <div class="md:w-1/2">
+                                <span class="text-brand-accent font-bold text-sm uppercase mb-2 block">Hormone Balance</span>
+                                <h3 class="text-3xl font-bold text-brand-dark mb-6">선택적 에스트로겐 수용체 조절 (SERM)</h3>
+                                <p class="text-gray-600 mb-6 leading-relaxed text-lg">
+                                    합성 호르몬제의 부작용은 없애고, 천연물의 효능은 극대화했습니다.
+                                    글리세올린은 수용체 종류에 따라 다르게 작용하는 스마트한 분자입니다.
+                                </p>
+                                <ul class="space-y-4">
+                                    <li class="flex items-start p-4 bg-red-50 rounded-lg border border-red-100">
+                                        <i class="fas fa-shield-alt text-red-500 mt-1 mr-3 text-lg"></i>
+                                        <div>
+                                            <span class="text-red-600 font-bold block mb-1">Safety (안전성)</span>
+                                            <span class="text-sm text-gray-700"><strong>ER-α (유방/자궁):</strong> 억제(Antagonist)하여 암 발생 위험을 차단합니다.</span>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start p-4 bg-green-50 rounded-lg border border-green-100">
+                                        <i class="fas fa-check-circle text-green-600 mt-1 mr-3 text-lg"></i>
+                                        <div>
+                                            <span class="text-green-700 font-bold block mb-1">Functionality (기능성)</span>
+                                            <span class="text-sm text-gray-700"><strong>ER-β (뼈/피부):</strong> 활성화(Agonist)하여 골밀도 증가 및 갱년기 증상을 완화합니다.</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="md:w-1/2 flex justify-center">
+                                <div class="relative w-72 h-72 bg-gray-50 rounded-full flex items-center justify-center shadow-inner">
+                                    <div class="text-center p-6">
+                                        <i class="fas fa-balance-scale text-6xl text-brand-primary mb-4"></i>
+                                        <h4 class="text-xl font-bold text-brand-dark">Perfect Balance</h4>
+                                        <p class="text-sm text-gray-500 mt-2">유방암 걱정 없는<br>천연 갱년기 솔루션</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= PAGE: BUSINESS ================= -->
+    <section id="business" class="page-section bg-white">
+        <div class="max-w-7xl mx-auto px-4 py-12">
+            <div class="text-center mb-16">
+                <span class="text-brand-primary font-bold tracking-widest text-sm uppercase">Strategic Growth</span>
+                <h2 class="text-4xl md:text-5xl font-display font-bold text-brand-dark mt-2 mb-6">3-Phase Roadmap</h2>
+                <p class="text-gray-600 max-w-3xl mx-auto">
+                    안정적인 현금 흐름을 확보하고, 고부가가치 시장으로 확장하여<br>최종적으로 글로벌 신약 기업으로 도약합니다.
+                </p>
+            </div>
+
+            <div class="relative">
+                <!-- Connection Line -->
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-gray-200 -translate-y-1/2 z-0"></div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+                    
+                    <!-- Phase 1 Card (Color: Gray/Silver) -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 folder-card group flex flex-col h-full relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gray-400"></div>
+                        <div class="flex-grow">
+                            <!-- 3D Icon Wrapper -->
+                            <div class="folder-icon-wrapper mb-6 flex justify-center">
+                                <div class="w-16 h-16 bg-gray-500 text-white rounded-2xl flex items-center justify-center font-bold text-2xl shadow-lg transform group-hover:rotate-3 transition-transform">
+                                    1
+                                </div>
+                            </div>
+                            <h3 class="text-sm font-bold text-gray-500 uppercase mb-2 text-center">Foundation (~2026)</h3>
+                            <h4 class="text-2xl font-bold text-brand-dark mb-4 text-center">화장품 & 식품 원료</h4>
+                            <ul class="text-sm text-gray-600 space-y-2 mb-6 text-center">
+                                <li>• 기능성 화장품 (미백/항염)</li>
+                                <li>• 이너뷰티 건기식 (다이어트)</li>
+                                <li>• <strong>Cash Cow 확보</strong></li>
+                            </ul>
+                        </div>
+                        <button onclick="openModal('modal-phase1')" class="w-full py-2 border border-gray-300 rounded-lg text-sm font-bold text-gray-600 hover:bg-gray-600 hover:text-white transition">자세히 보기</button>
+                    </div>
+
+                    <!-- Phase 2 Card (Color: Light Pink - Accent) -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg border border-brand-accent folder-card group flex flex-col h-full relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-brand-accent"></div>
+                        <div class="flex-grow">
+                            <!-- 3D Icon Wrapper -->
+                            <div class="folder-icon-wrapper mb-6 flex justify-center">
+                                <div class="w-16 h-16 bg-brand-accent text-white rounded-2xl flex items-center justify-center font-bold text-2xl shadow-lg transform group-hover:rotate-3 transition-transform">
+                                    2
+                                </div>
+                            </div>
+                            <h3 class="text-sm font-bold text-brand-accent uppercase mb-2 text-center">Expansion (2027~2028)</h3>
+                            <h4 class="text-2xl font-bold text-brand-dark mb-4 text-center">의료기기 (스킨부스터)</h4>
+                            <ul class="text-sm text-gray-600 space-y-2 mb-6 text-center">
+                                <li>• 4등급 의료기기 (피부재생용 주사제)</li>
+                                <li>• 병의원 전용 스킨부스터</li>
+                                <li>• <strong>고마진 시장 진입</strong></li>
+                            </ul>
+                        </div>
+                        <button onclick="openModal('modal-phase2')" class="w-full py-2 bg-brand-accent text-white rounded-lg text-sm font-bold hover:bg-brand-dark transition shadow-md">자세히 보기</button>
+                    </div>
+
+                    <!-- Phase 3 Card (Color: Tiffany Blue) -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg border border-brand-tiffany folder-card group flex flex-col h-full relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-brand-tiffany"></div>
+                        <div class="flex-grow">
+                            <!-- 3D Icon Wrapper -->
+                            <div class="folder-icon-wrapper mb-6 flex justify-center">
+                                <div class="w-16 h-16 bg-brand-tiffany text-white rounded-2xl flex items-center justify-center font-bold text-2xl shadow-lg transform group-hover:rotate-3 transition-transform">
+                                    3
+                                </div>
+                            </div>
+                            <h3 class="text-sm font-bold text-brand-tiffany uppercase mb-2 text-center">Ultimate Goal (2029~)</h3>
+                            <h4 class="text-2xl font-bold text-brand-dark mb-4 text-center">혁신 신약 개발</h4>
+                            <ul class="text-sm text-gray-600 space-y-2 mb-6 text-center">
+                                <li>• 합성 유도체 (NCE) 개발</li>
+                                <li>• 항암 / 대사질환 치료제</li>
+                                <li>• <strong>글로벌 라이선스 아웃</strong></li>
+                            </ul>
+                        </div>
+                        <button onclick="openModal('modal-phase3')" class="w-full py-2 border border-brand-tiffany rounded-lg text-sm font-bold text-brand-tiffany hover:bg-brand-tiffany hover:text-white transition">자세히 보기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= PAGE: COMPANY ================= -->
+    <section id="company" class="page-section bg-brand-light">
+        <div class="max-w-7xl mx-auto px-4 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-4xl font-display font-bold text-brand-dark mb-6">About PTEROGEN</h2>
+                    <p class="text-gray-600 text-lg mb-6 leading-relaxed">
+                        프테로젠은 2004년부터 20년 넘게 이어진 <strong>'글리세올린'</strong> 연구의 결정체입니다. 
+                        자연이 가진 무한한 잠재력을 과학의 언어로 해석하고, 기술로 증명합니다.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-white rounded-lg shadow-sm border-l-4 border-brand-primary">
+                            <h4 class="font-bold text-brand-dark">Mission</h4>
+                            <p class="text-sm text-gray-600">자연의 방어 기제를 인류의 건강 솔루션으로 재창조한다.</p>
+                        </div>
+                        <div class="p-4 bg-white rounded-lg shadow-sm border-l-4 border-brand-accent">
+                            <h4 class="font-bold text-brand-dark">Vision</h4>
+                            <p class="text-sm text-gray-600">Global No.1 Phyto-Biotech Company</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white p-6 rounded-xl shadow-md text-center hover:shadow-lg transition">
+                        <div class="w-16 h-16 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl">👨‍🔬</div>
+                        <h4 class="font-bold">김용훈 CTO</h4>
+                        <p class="text-xs text-gray-500 mt-1">생화학 박사<br>20년 글리세올린 연구</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md text-center hover:shadow-lg transition">
+                        <div class="w-16 h-16 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl">👩‍💼</div>
+                        <h4 class="font-bold">김민정 CEO</h4>
+                        <p class="text-xs text-gray-500 mt-1">식품공학 석사<br>사업 총괄</p>
+                    </div>
+                    <div class="col-span-2 bg-brand-dark text-white p-6 rounded-xl shadow-md flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold text-lg">지식재산권 (IP)</h4>
+                            <p class="text-xs opacity-80">특허 등록 2건 / 출원 진행 중</p>
+                        </div>
+                        <i class="fas fa-certificate text-3xl text-brand-accent"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= PAGE: CONTACT ================= -->
+    <section id="contact" class="page-section bg-white">
+        <div class="max-w-7xl mx-auto px-4 py-12">
+            <div class="bg-brand-dark rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row">
+                <div class="md:w-1/2 p-12 text-white flex flex-col justify-center">
+                    <h2 class="text-4xl font-bold mb-6">Contact Us</h2>
+                    <p class="text-gray-300 mb-8">
+                        프테로젠과의 파트너십을 통해 귀사의 제품에<br>혁신적인 가치를 더하세요.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-map-marker-alt w-8 text-brand-accent"></i>
+                            <span>대구광역시 북구 경대로17길 57 (IT융합산업빌딩)</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-envelope w-8 text-brand-accent"></i>
+                            <span>info@pterogen.com</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-phone w-8 text-brand-accent"></i>
+                            <span>053-XXX-XXXX</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2 bg-white p-12">
+                    <form class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">회사명 / 담당자명</label>
+                            <input type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-brand-primary outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">이메일</label>
+                            <input type="email" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-brand-primary outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">문의 내용</label>
+                            <select class="w-full p-3 border border-gray-300 rounded-lg mb-3 outline-none">
+                                <option>원료 공급 문의</option>
+                                <option>투자 관련 문의</option>
+                                <option>기타 제휴 문의</option>
+                            </select>
+                            <textarea rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-brand-primary outline-none transition"></textarea>
+                        </div>
+                        <button type="button" class="w-full py-4 bg-brand-primary text-white font-bold rounded-lg hover:bg-brand-dark transition shadow-lg">문의하기</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <footer class="max-w-7xl mx-auto px-4 py-8 text-center text-sm text-gray-400">
+            &copy; 2025 PTEROGEN Inc. All rights reserved.
+        </footer>
+    </section>
+
+    <!-- ================= MODALS (BUSINESS) ================= -->
+    <!-- Phase 1 Modal -->
+    <div id="modal-phase1" class="modal fixed inset-0 z-[60] flex items-center justify-center">
+        <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeModal('modal-phase1')"></div>
+        <div class="bg-white rounded-2xl shadow-2xl w-11/12 md:w-1/2 max-w-lg p-8 relative z-10 transform transition-all">
+            <button onclick="closeModal('modal-phase1')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-gray-500 text-white rounded-full flex items-center justify-center font-bold text-lg mx-auto mb-3">1</div>
+                <h3 class="text-2xl font-bold text-brand-dark">Phase 1: Foundation</h3>
+                <p class="text-sm text-brand-accent font-bold uppercase">시장 안착 및 캐시카우 확보</p>
+            </div>
+            <div class="space-y-4 text-gray-600 text-sm leading-relaxed">
+                <p><strong>타겟 시장:</strong> 기능성 화장품 및 건강기능식품 원료</p>
+                <p><strong>핵심 전략:</strong>
+                    <br>- '바르는 미백/항염'과 '먹는 다이어트/대사관리' 듀얼 트랙
+                    <br>- 가치 기반 가격 책정(Value-Based Pricing)으로 고마진 확보
+                </p>
+                <p><strong>목표 매출:</strong> 초기 B2B 원료 판매를 통해 안정적 현금 흐름 창출</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phase 2 Modal -->
+    <div id="modal-phase2" class="modal fixed inset-0 z-[60] flex items-center justify-center">
+        <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeModal('modal-phase2')"></div>
+        <div class="bg-white rounded-2xl shadow-2xl w-11/12 md:w-1/2 max-w-lg p-8 relative z-10 transform transition-all border-t-4 border-brand-accent">
+            <button onclick="closeModal('modal-phase2')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-brand-accent text-white rounded-full flex items-center justify-center font-bold text-lg mx-auto mb-3">2</div>
+                <h3 class="text-2xl font-bold text-brand-dark">Phase 2: High-Value</h3>
+                <p class="text-sm text-brand-primary font-bold uppercase">의료기기 시장 진입</p>
+            </div>
+            <div class="space-y-4 text-gray-600 text-sm leading-relaxed">
+                <p><strong>타겟 시장:</strong> 의료기기 4등급 (스킨부스터, 피부재생용 주사제)</p>
+                <p><strong>핵심 전략:</strong>
+                    <br>- 강력한 항염/재생 효능 기반 '통증 없는 식물성 스킨부스터' 포지셔닝
+                    <br>- 병의원(피부과/성형외과) 전문 유통망 구축
+                </p>
+                <p><strong>차별점:</strong> 기존 PDRN 대비 우수한 항염 효과 및 가격 경쟁력</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phase 3 Modal -->
+    <div id="modal-phase3" class="modal fixed inset-0 z-[60] flex items-center justify-center">
+        <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeModal('modal-phase3')"></div>
+        <div class="bg-white rounded-2xl shadow-2xl w-11/12 md:w-1/2 max-w-lg p-8 relative z-10 transform transition-all border-t-4 border-brand-tiffany">
+            <button onclick="closeModal('modal-phase3')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-brand-tiffany text-white rounded-full flex items-center justify-center font-bold text-lg mx-auto mb-3">3</div>
+                <h3 class="text-2xl font-bold text-brand-dark">Phase 3: Ultimate Goal</h3>
+                <p class="text-sm text-brand-tiffany font-bold uppercase">글로벌 신약 기업 도약</p>
+            </div>
+            <div class="space-y-4 text-gray-600 text-sm leading-relaxed">
+                <p><strong>타겟 시장:</strong> 혁신 신약 (First-in-Class Drug)</p>
+                <p><strong>핵심 전략:</strong>
+                    <br>- 천연물 구조 최적화 신규 화합물(NCE) 합성 및 물질 특허 확보
+                    <br>- 내성 극복 유방암 치료제, 경구용 대사질환 치료제 개발
+                </p>
+                <p><strong>Exit Plan:</strong> 글로벌 빅파마 대상 기술 수출 (License Out) 및 IPO</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Routing and Interactivity -->
+    <script>
+        // SPA Routing Logic
+        function route(pageId) {
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            const targetSection = document.getElementById(pageId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            document.querySelectorAll('.nav-link').forEach(btn => {
+                btn.classList.remove('text-brand-primary', 'active');
+                btn.classList.add('text-gray-600');
+                if(btn.getAttribute('onclick').includes(pageId)) {
+                    btn.classList.remove('text-gray-600');
+                    btn.classList.add('text-brand-primary', 'active');
+                }
+            });
+            window.scrollTo(0, 0);
+            document.getElementById('mobile-menu').classList.add('hidden');
+            
+            if (pageId === 'home') {
+                initHomeAnimation();
+            }
+            if (pageId === 'technology') {
+                setTimeout(renderTechYieldChart, 100);
+            }
+            if (pageId === 'science') {
+                setTimeout(renderChart, 100);
+                // Default to Anti-Inflammation as requested
+                document.getElementById('tab-anti').classList.remove('hidden');
+                document.getElementById('tab-white').classList.add('hidden');
+                document.getElementById('tab-serm').classList.add('hidden');
+                updateTabStyles('tab-anti');
+            }
+        }
+
+        // --- 3D Molecular Canvas Animation (Home Page) ---
+        let homeCanvasAnimReq;
+        function initHomeAnimation() {
+            const canvas = document.getElementById('hero-canvas');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            const numParticles = 80;
+            const particles = [];
+            const focalLength = 400;
+            let mouseX = 0;
+            let mouseY = 0;
+            let targetRotationX = 0;
+            let targetRotationY = 0;
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+                ctx.translate(width / 2, height / 2);
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX - window.innerWidth / 2) * 0.001;
+                mouseY = (e.clientY - window.innerHeight / 2) * 0.001;
+            });
+
+            for(let i=0; i<numParticles; i++) {
+                particles.push({
+                    x: (Math.random() - 0.5) * 800,
+                    y: (Math.random() - 0.5) * 800,
+                    z: (Math.random() - 0.5) * 800,
+                    size: Math.random() * 3 + 1,
+                    color: Math.random() > 0.7 ? '#D4A5A5' : '#FFFFFF'
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(-width/2, -height/2, width, height);
+                targetRotationY += (mouseX - targetRotationY) * 0.05;
+                targetRotationX += (mouseY - targetRotationX) * 0.05;
+                particles.sort((a, b) => b.z - a.z);
+
+                ctx.lineWidth = 0.3;
+                for (let i = 0; i < particles.length; i++) {
+                    const p = particles[i];
+                    let x1 = p.x * Math.cos(targetRotationY) - p.z * Math.sin(targetRotationY);
+                    let z1 = p.z * Math.cos(targetRotationY) + p.x * Math.sin(targetRotationY);
+                    let y1 = p.y * Math.cos(targetRotationX) - z1 * Math.sin(targetRotationX);
+                    let z2 = z1 * Math.cos(targetRotationX) + p.y * Math.sin(targetRotationX);
+                    let scale = focalLength / (focalLength + z2);
+                    let x2d = x1 * scale;
+                    let y2d = y1 * scale;
+
+                    if (scale > 0) {
+                        ctx.globalAlpha = Math.min(1, scale * 0.5 + 0.2);
+                        ctx.beginPath();
+                        ctx.arc(x2d, y2d, p.size * scale, 0, Math.PI * 2);
+                        ctx.fillStyle = p.color;
+                        ctx.fill();
+
+                        for (let j = i + 1; j < particles.length; j++) {
+                            const p2 = particles[j];
+                            const dx = p.x - p2.x;
+                            const dy = p.y - p2.y;
+                            const dz = p.z - p2.z;
+                            const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+
+                            if (dist < 150) {
+                                let p2x1 = p2.x * Math.cos(targetRotationY) - p2.z * Math.sin(targetRotationY);
+                                let p2z1 = p2.z * Math.cos(targetRotationY) + p2.x * Math.sin(targetRotationY);
+                                let p2y1 = p2.y * Math.cos(targetRotationX) - p2z1 * Math.sin(targetRotationX);
+                                let p2z2 = p2z1 * Math.cos(targetRotationX) + p2.y * Math.sin(targetRotationX);
+                                let p2scale = focalLength / (focalLength + p2z2);
+                                let p2x2d = p2x1 * p2scale;
+                                let p2y2d = p2y1 * p2scale;
+
+                                if(p2scale > 0) {
+                                    ctx.beginPath();
+                                    ctx.strokeStyle = `rgba(255,255,255, ${0.2 * (1 - dist/150)})`;
+                                    ctx.moveTo(x2d, y2d);
+                                    ctx.lineTo(p2x2d, p2y2d);
+                                    ctx.stroke();
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                particles.forEach(p => {
+                    const angle = 0.001;
+                    const x = p.x * Math.cos(angle) - p.z * Math.sin(angle);
+                    const z = p.x * Math.sin(angle) + p.z * Math.cos(angle);
+                    p.x = x;
+                    p.z = z;
+                });
+
+                homeCanvasAnimReq = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // Tab Logic
+        function openTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+                content.classList.remove('block');
+            });
+            const selectedTab = document.getElementById(tabId);
+            selectedTab.classList.remove('hidden');
+            selectedTab.classList.add('block');
+            updateTabStyles(tabId);
+            if (tabId === 'tab-anti' && chartInstance) {
+               chartInstance.resize();
+            }
+        }
+
+        function updateTabStyles(activeTabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('text-brand-primary', 'border-brand-accent', 'bg-white');
+                btn.classList.add('text-gray-400', 'border-transparent');
+            });
+            const activeBtn = document.getElementById('btn-' + activeTabId);
+            if(activeBtn) {
+                activeBtn.classList.remove('text-gray-400', 'border-transparent');
+                activeBtn.classList.add('text-brand-primary', 'border-brand-accent', 'bg-white');
+            }
+        }
+
+        // Modal Logic
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.add('modal-active'); }, 10);
+        }
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('modal-active');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        // Chart rendering
+        let chartInstance = null;
+        function renderChart() {
+            if (chartInstance) return;
+            const ctx = document.getElementById('antioxidantChart').getContext('2d');
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Genistein', 'Glyceollin'],
+                    datasets: [{
+                        label: '항산화 활성 (DPPH)',
+                        data: [1, 10],
+                        backgroundColor: ['rgba(200, 200, 200, 0.5)', 'rgba(47, 79, 79, 0.9)'],
+                        borderColor: ['rgba(200, 200, 200, 1)', 'rgba(47, 79, 79, 1)'],
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        barThickness: 40,
+                        maxBarThickness: 50
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: (c) => c.parsed.y + ' (상대 수치)' } }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 12, grid: { color: '#f3f4f6' }, ticks: { stepSize: 2 } },
+                        x: { grid: { display: false } }
+                    },
+                    animation: { duration: 1200, easing: 'easeOutQuart' }
+                }
+            });
+        }
+
+        // Tech Yield Chart
+        let techYieldChartInstance = null;
+        function renderTechYieldChart() {
+            if (techYieldChartInstance) return;
+            const ctx = document.getElementById('techYieldChart').getContext('2d');
+            techYieldChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['기존 (자연추출)', '프테로젠 (Elicitation)'],
+                    datasets: [{
+                        label: '수율 (%)',
+                        data: [0.1, 1.0],
+                        backgroundColor: ['rgba(200, 200, 200, 0.5)', 'rgba(47, 79, 79, 0.9)'],
+                        borderColor: ['rgba(200, 200, 200, 1)', 'rgba(47, 79, 79, 1)'],
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        barThickness: 30
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y', // Horizontal Bar
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { beginAtZero: true, max: 1.2, grid: { display: false } },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            route('home');
+            
+            const logoImg = document.querySelector('img[alt="PTEROGEN Logo"]');
+            const logoText = document.getElementById('logo-text');
+            if(logoImg) {
+                logoImg.onerror = function() {
+                    logoImg.style.display = 'none';
+                    logoText.classList.remove('hidden');
+                };
+            }
+        });
+    </script>
+</body>
+</html>
+</body>
+</html>
